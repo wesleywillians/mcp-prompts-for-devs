@@ -1,0 +1,78 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# MCP Project Structure
+
+This project follows a specific structure for implementing MCP (Model Context Protocol) servers.
+
+## Important Constraints
+
+1. SDK and Validation:
+   - ⚠️ It is MANDATORY to use the official MCP SDK (@modelcontextprotocol/sdk)
+   - ⚠️ It is MANDATORY to use Zod for parameter validation
+   - ⚠️ NEVER implement your own version of the MCP protocol
+
+2. Transport:
+   - ⚠️ NEVER implement the MCP server using SSE (Server-Sent Events)
+   - ⚠️ The MCP server MUST use ONLY the standard stdio transport from the SDK
+
+## Mandatory Dependencies
+
+```json
+{
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.9.0",
+    "zod": "^3.22.4"
+  }
+}
+```
+
+## Main Files
+
+- [src/mcp.ts](mdc:src/mcp.ts) - MCP server implementation with stdio transport
+- [src/users_tool.ts](mdc:src/users_tool.ts) - Implementation of MCP tools
+
+## Configuration
+
+- [package.json](mdc:package.json) - Project configuration and dependencies
+- [tsconfig.json](mdc:tsconfig.json) - TypeScript configuration
+
+## Directories
+
+- `src/` - TypeScript source code
+- `dist/` - Compiled JavaScript code
+- `.cursor/rules/` - Cursor rules for the project
+
+## Example of Correct Implementation
+
+```typescript
+import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { z } from "zod";
+
+// Create server using official SDK
+const server = new McpServer({
+  name: "mcp-server",
+  version: "1.0.0"
+});
+
+// Register tool with Zod validation
+server.tool(
+  "example",
+  {
+    // Always use Zod for validation
+    parameters: z.object({
+      field: z.string()
+    })
+  },
+  async (params) => {
+    // Implementation
+  }
+);
+
+// Use ONLY stdio transport
+const transport = new StdioServerTransport();
+await server.connect(transport);
+```
