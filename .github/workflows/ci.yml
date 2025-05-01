@@ -1,0 +1,63 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    # Run on any pull request, regardless of target branch
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+      
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+    
+    # First, build a specific container for testing
+    - name: Build Docker image for testing
+      run: |
+        cat > Dockerfile.test << 'EOF'
+        FROM node:23-alpine
+        WORKDIR /app
+        COPY package*.json ./
+        RUN npm ci
+        COPY . .
+        EOF
+        docker build -t mcp-server-prompt-dev:test -f Dockerfile.test .
+    
+    # Run tests in this container
+    - name: Run tests inside Docker container
+      run: |
+        docker run --rm mcp-server-prompt-dev:test npm test
+    
+    # Then, build the production Dockerfile
+    - name: Build production Docker image
+      uses: docker/build-push-action@v6
+      with:
+        context: .
+        push: false
+        load: true
+        tags: mcp-server-prompt-dev:prod
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+    
+    # Check if the production container was built correctly
+    - name: Verify production Docker image
+      run: |
+        # Check if the container starts correctly
+        docker run --name test-prod -d mcp-server-prompt-dev:prod
+        sleep 5 # Wait a bit for the container to start
+        
+        # Check container status
+        if [ "$(docker inspect -f {{.State.Running}} test-prod)" != "true" ]; then
+          echo "Production container failed to start"
+          docker logs test-prod
+          exit 1
+        fi
+        
+        # Clean up test container
+        docker stop test-prod
+        docker rm test-prod 
