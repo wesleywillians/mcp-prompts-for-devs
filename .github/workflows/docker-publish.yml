@@ -23,6 +23,10 @@ jobs:
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
     
+    # Setup QEMU for multi-platform builds
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v3
+    
     # Build and run tests first to guarantee image quality
     - name: Build and test
       run: |
@@ -37,12 +41,13 @@ jobs:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
     
-    # Build and push the production Docker image
+    # Build and push the production Docker image for multiple platforms
     - name: Build and push Docker image
       uses: docker/build-push-action@v6
       with:
         context: .
         push: true
+        platforms: linux/amd64,linux/arm64
         tags: |
           wesleywillians/mcp-prompts-for-devs:latest
           wesleywillians/mcp-prompts-for-devs:${{ steps.version-check.outputs.version-tag }}
