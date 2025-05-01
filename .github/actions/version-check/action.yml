@@ -1,0 +1,79 @@
+name: 'Docker Hub Version Check'
+description: 'Checks if a version already exists in Docker Hub and creates appropriate tags'
+inputs:
+  docker-username:
+    description: 'Docker Hub username'
+    required: true
+  docker-token:
+    description: 'Docker Hub token'
+    required: true
+  image-name:
+    description: 'Docker image name'
+    required: true
+    default: 'wesleywilians/mcp-prompts-for-devs'
+  fail-on-existing:
+    description: 'Whether to fail if version exists'
+    required: false
+    default: 'false'
+outputs:
+  version:
+    description: 'Version from package.json'
+    value: ${{ steps.extract-version.outputs.version }}
+  version-tag:
+    description: 'Unique version tag with commit hash'
+    value: ${{ steps.extract-version.outputs.version_tag }}
+  exists:
+    description: 'Whether the version already exists'
+    value: ${{ steps.check-existence.outputs.exists }}
+
+runs:
+  using: 'composite'
+  steps:
+    - id: extract-version
+      name: Extract version from package.json
+      shell: bash
+      run: |
+        # Extract version from package.json
+        VERSION=$(node -p "require('./package.json').version")
+        
+        # Get short commit hash
+        SHORT_SHA=$(git rev-parse --short HEAD)
+        
+        # Create a unique version tag
+        VERSION_TAG="${VERSION}-${SHORT_SHA}"
+        
+        # Output values
+        echo "version=$VERSION" >> $GITHUB_OUTPUT
+        echo "version_tag=$VERSION_TAG" >> $GITHUB_OUTPUT
+        echo "short_sha=$SHORT_SHA" >> $GITHUB_OUTPUT
+        
+        echo "Extracted version: $VERSION"
+        echo "Unique version tag: $VERSION_TAG"
+    
+    - id: check-existence
+      name: Check if version exists in Docker Hub
+      shell: bash
+      run: |
+        # Login to Docker Hub
+        echo "${{ inputs.docker-token }}" | docker login -u ${{ inputs.docker-username }} --password-stdin
+        
+        # Check if version exists
+        VERSION="${{ steps.extract-version.outputs.version }}"
+        IMAGE="${{ inputs.image-name }}"
+        
+        TAG_EXISTS=$(curl -s "https://hub.docker.com/v2/repositories/${IMAGE}/tags/?name=${VERSION}" | grep -c "\"name\":\"${VERSION}\"" || true)
+        
+        # Output result
+        if [ "$TAG_EXISTS" -gt 0 ]; then
+          echo "Version ${VERSION} already exists in Docker Hub for ${IMAGE}"
+          echo "exists=true" >> $GITHUB_OUTPUT
+          
+          # Fail if required
+          if [ "${{ inputs.fail-on-existing }}" == "true" ]; then
+            echo "::error::Version ${VERSION} already exists in Docker Hub. Please update the version in package.json before merging."
+            exit 1
+          fi
+        else
+          echo "Version ${VERSION} does not exist in Docker Hub for ${IMAGE}"
+          echo "exists=false" >> $GITHUB_OUTPUT
+        fi 
