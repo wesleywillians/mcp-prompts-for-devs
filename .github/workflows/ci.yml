@@ -3,6 +3,7 @@ name: CI
 on:
   # Execute only on pull requests
   pull_request:
+    # Run on any pull request, regardless of target branch
 
 jobs:
   build-and-test:
@@ -22,39 +23,47 @@ jobs:
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
     
-    # Build and run tests using Dockerfile.test
-    - name: Build Docker test image and run tests
+    # First, build a specific container for testing
+    - name: Build Docker image for testing
       run: |
-        # Build test image from Dockerfile.test
-        docker build -t wesleywilians/mcp-prompts-for-devs:test -f Dockerfile.test .
-        
-        # Run tests in the container
-        docker run --rm wesleywilians/mcp-prompts-for-devs:test
+        cat > Dockerfile.test << 'EOF'
+        FROM node:23-alpine
+        WORKDIR /app
+        COPY package*.json ./
+        RUN npm ci
+        COPY . .
+        EOF
+        docker build -t wesleywillians/mcp-prompts-for-devs:test -f Dockerfile.test .
     
-    # Build the production Dockerfile
+    # Run tests in this container
+    - name: Run tests inside Docker container
+      run: |
+        docker run --rm wesleywillians/mcp-prompts-for-devs:test npm test
+    
+    # Then, build the production Dockerfile for validation
     - name: Build production Docker image
       uses: docker/build-push-action@v6
       with:
         context: .
         push: false
         load: true
-        tags: wesleywilians/mcp-prompts-for-devs:prod
+        tags: wesleywillians/mcp-prompts-for-devs:prod
         cache-from: type=gha
         cache-to: type=gha,mode=max
     
-    # Check if the production container can at least be created
+    # Check if the production container was built correctly
     - name: Verify production Docker image
       run: |
-        # Check Docker image details
-        docker image inspect wesleywilians/mcp-prompts-for-devs:prod
+        # Verify the image was created
+        docker image inspect wesleywillians/mcp-prompts-for-devs:prod
         
-        # Try running the container in detached mode
-        echo "Attempting to start the container..."
-        docker run --name test-prod -d wesleywilians/mcp-prompts-for-devs:prod || true
+        # Check if the container starts correctly
+        docker run --name test-prod -d wesleywillians/mcp-prompts-for-devs:prod || true
+        sleep 5 # Wait a bit for the container to start
         
-        # Show container logs regardless of whether it's running
-        echo "Container logs:"
+        # Display logs
         docker logs test-prod
         
         # Clean up test container
-        docker rm -f test-prod || true 
+        docker stop test-prod || true
+        docker rm test-prod || true 
