@@ -16,7 +16,7 @@ The MCP Server Prompt Generator For Devs is a server that implements the Model C
 The simplest way to use the MCP Server Prompt Generator For Devs is through Docker:
 
 ```bash
-docker run --rm -i wesleywilians/mcp-prompts-for-devs
+docker run --rm -i wesleywillians/mcp-prompts-for-devs
 ```
 
 This command:
@@ -66,7 +66,7 @@ The server comes with pre-configured prompt templates:
   "mcpServers": {
     "mcp-prompts-for-devs": {
       "command": "docker",
-      "args": ["run", "--rm", "-i", "wesleywilians/mcp-prompts-for-devs"]
+      "args": ["run", "--rm", "-i", "wesleywillians/mcp-prompts-for-devs"]
     }
   }
 }
@@ -87,7 +87,7 @@ The server comes with pre-configured prompt templates:
 "mcp.servers": {
   "mcp-prompts-for-devs": {
     "command": "docker",
-    "args": ["run", "--rm", "-i", "wesleywilians/mcp-prompts-for-devs"]
+    "args": ["run", "--rm", "-i", "wesleywillians/mcp-prompts-for-devs"]
   }
 }
 ```
@@ -107,7 +107,7 @@ The server comes with pre-configured prompt templates:
 "claude.mcp.servers": {
   "mcp-prompts-for-devs": {
     "command": "docker",
-    "args": ["run", "--rm", "-i", "wesleywilians/mcp-prompts-for-devs"]
+    "args": ["run", "--rm", "-i", "wesleywillians/mcp-prompts-for-devs"]
   }
 }
 ```
