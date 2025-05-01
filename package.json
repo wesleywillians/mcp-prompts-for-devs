@@ -15,7 +15,7 @@
     "prompt",
     "development"
   ],
-  "author": "Wesley Wilians",
+  "author": "Wesley Willians",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.10.2",
     "@types/node": "^20.17.32",
