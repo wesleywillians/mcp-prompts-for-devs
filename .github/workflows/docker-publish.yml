@@ -44,8 +44,8 @@ jobs:
         context: .
         push: true
         tags: |
-          wesleywilians/mcp-prompts-for-devs:latest
-          wesleywilians/mcp-prompts-for-devs:${{ steps.version-check.outputs.version-tag }}
-          ${{ steps.version-check.outputs.exists != 'true' && format('wesleywilians/mcp-prompts-for-devs:{0}', steps.version-check.outputs.version) || '' }}
+          wesleywillians/mcp-prompts-for-devs:latest
+          wesleywillians/mcp-prompts-for-devs:${{ steps.version-check.outputs.version-tag }}
+          ${{ steps.version-check.outputs.exists != 'true' && format('wesleywillians/mcp-prompts-for-devs:{0}', steps.version-check.outputs.version) || '' }}
         cache-from: type=gha
         cache-to: type=gha,mode=max 

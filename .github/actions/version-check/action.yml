@@ -10,7 +10,7 @@ inputs:
   image-name:
     description: 'Docker image name'
     required: true
-    default: 'wesleywilians/mcp-prompts-for-devs'
+    default: 'wesleywillians/mcp-prompts-for-devs'
   fail-on-existing:
     description: 'Whether to fail if version exists'
     required: false
