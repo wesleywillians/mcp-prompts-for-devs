@@ -1,6 +1,6 @@
 {
   "name": "MCP Server Prompts Generator for Devs",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "MCP server with tools for generating prompts for developers",
   "main": "dist/mcp.js",
   "license": "ISC",
