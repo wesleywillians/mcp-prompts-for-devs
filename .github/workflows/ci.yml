@@ -1,0 +1,60 @@
+name: CI
+
+on:
+  # Execute only on pull requests
+  pull_request:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    # Check version using the reusable action
+    - name: Check version
+      uses: ./.github/actions/version-check
+      with:
+        docker-username: ${{ secrets.DOCKERHUB_USERNAME }}
+        docker-token: ${{ secrets.DOCKERHUB_TOKEN }}
+        fail-on-existing: 'true'
+      
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+    
+    # Build and run tests using Dockerfile.test
+    - name: Build Docker test image and run tests
+      run: |
+        # Build test image from Dockerfile.test
+        docker build -t wesleywilians/mcp-prompts-for-devs:test -f Dockerfile.test .
+        
+        # Run tests in the container
+        docker run --rm wesleywilians/mcp-prompts-for-devs:test
+    
+    # Build the production Dockerfile
+    - name: Build production Docker image
+      uses: docker/build-push-action@v6
+      with:
+        context: .
+        push: false
+        load: true
+        tags: wesleywilians/mcp-prompts-for-devs:prod
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+    
+    # Check if the production container can at least be created
+    - name: Verify production Docker image
+      run: |
+        # Check Docker image details
+        docker image inspect wesleywilians/mcp-prompts-for-devs:prod
+        
+        # Try running the container in detached mode
+        echo "Attempting to start the container..."
+        docker run --name test-prod -d wesleywilians/mcp-prompts-for-devs:prod || true
+        
+        # Show container logs regardless of whether it's running
+        echo "Container logs:"
+        docker logs test-prod
+        
+        # Clean up test container
+        docker rm -f test-prod || true 

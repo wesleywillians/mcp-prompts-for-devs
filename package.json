@@ -1,8 +1,9 @@
 {
-  "name": "mcp-server-prompt-generator-for-devs",
-  "version": "1.0.0",
-  "description": "Servidor MCP com ferramentas para geração de prompts para desenvolvedores",
+  "name": "MCP Server Prompts Generator for Devs",
+  "version": "0.1.0",
+  "description": "MCP server with tools for generating prompts for developers",
   "main": "dist/mcp.js",
+  "license": "ISC",
   "scripts": {
     "build": "tsc",
     "start": "node dist/mcp.js",
@@ -14,8 +15,7 @@
     "prompt",
     "development"
   ],
-  "author": "",
-  "license": "ISC",
+  "author": "Wesley Wilians",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.10.2",
     "@types/node": "^20.17.32",
