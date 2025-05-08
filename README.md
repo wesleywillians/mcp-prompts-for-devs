@@ -122,13 +122,22 @@ You can quickly set up the configuration by running this command in your termina
 
 ```bash
 cat > ~/.vscode/settings.json << 'EOL'
-{                             
-    "claude.mcp.servers": {
-        "mcp-prompts-for-devs": {
-            "command": "docker",
-            "args": ["run", "--rm", "-i", "wesleywillians/mcp-prompts-for-devs"]
-        }
+{
+  "mcp": {
+    "inputs": [],
+    "servers": {
+      "mcp-prompts-for-devs-local": {
+        "command": "docker",
+        "args": [
+          "run",
+          "--rm",
+          "-i",
+          "local-mcp-prompts-for-devs:latest"
+        ],
+        "env": {}
+      }
     }
+  }
 }
 EOL
 ```
