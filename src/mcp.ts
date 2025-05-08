@@ -70,7 +70,8 @@ async function main() {
           ],
           needsConfirmation: result.needsConfirmation,
         };
-      }
+      },
+      "Generate a prompt by combining a template with your specific task"
     );
     
     // Register tool to list available prompts
@@ -88,7 +89,8 @@ async function main() {
           ],
           needsConfirmation: false,
         };
-      }
+      },
+      "List all available prompt templates"
     );
     
     // Register tool to list prompts by category
@@ -123,7 +125,8 @@ async function main() {
           ],
           needsConfirmation: false,
         };
-      }
+      },
+      "List all available prompt templates organized by category"
     );
     
     // Register tool to preview prompt templates
@@ -164,7 +167,8 @@ async function main() {
             needsConfirmation: false,
           };
         }
-      }
+      },
+      "Preview the content of a specific prompt template"
     );
 
     // Register tool to create new prompt templates
@@ -214,7 +218,8 @@ async function main() {
             needsConfirmation: false,
           };
         }
-      }
+      },
+      "Create a new prompt template with customizable content and metadata"
     );
 
     // Register tool to update existing prompt templates
@@ -273,7 +278,8 @@ async function main() {
             needsConfirmation: false,
           };
         }
-      }
+      },
+      "Update an existing prompt template with new content and/or metadata"
     );
     
     // Register tool to list version history for a prompt
@@ -329,7 +335,8 @@ async function main() {
             needsConfirmation: false,
           };
         }
-      }
+      },
+      "List all versions of a specific prompt template"
     );
     
     // Register tool to preview a specific prompt version
@@ -389,7 +396,8 @@ async function main() {
             needsConfirmation: false,
           };
         }
-      }
+      },
+      "Preview a specific version of a prompt template"
     );
     
     // Register tool to restore a previous prompt version
@@ -430,7 +438,8 @@ async function main() {
             needsConfirmation: false,
           };
         }
-      }
+      },
+      "Restore a previous version of a prompt template"
     );
 
     // Configure transport
