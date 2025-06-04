@@ -18,7 +18,7 @@ jobs:
       with:
         docker-username: ${{ secrets.DOCKERHUB_USERNAME }}
         docker-token: ${{ secrets.DOCKERHUB_TOKEN }}
-        fail-on-existing: 'true'
+        fail-on-existing: 'false'
       
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
