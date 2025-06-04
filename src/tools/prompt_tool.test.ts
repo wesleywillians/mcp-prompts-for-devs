@@ -68,6 +68,18 @@ describe("fetchPromptTemplate", () => {
     );
   });
 
+  it("should handle a missing prompts directory", async () => {
+    const error = new Error("File not found");
+    (error as any).code = "ENOENT";
+    (fs.readFile as jest.Mock).mockRejectedValue(error);
+
+    (fs.readdir as jest.Mock).mockRejectedValue(new Error("directory missing"));
+
+    await expect(fetchPromptTemplate("missing")).rejects.toThrow(
+      'Prompt "missing" not found. No prompts found.'
+    );
+  });
+
   it("should throw a generic error if an unexpected error occurs", async () => {
     // Mock readFile to throw a different error
     const error = new Error("Permission denied");
