@@ -2,6 +2,7 @@
   "name": "MCP Server Prompts Generator for Devs",
   "version": "0.1.2",
   "description": "MCP server with tools for generating prompts for developers",
+  "author": "Wesley Willians",
   "main": "dist/mcp.js",
   "license": "ISC",
   "scripts": {
@@ -15,7 +16,16 @@
     "prompt",
     "development"
   ],
-  "author": "Wesley Willians",
+  "contributors": [
+  {
+      "name": "wesleywillians",
+      "url": "https://github.com/wesleywillians"
+    },
+    {
+      "name": "robsoncombr",
+      "url": "https://github.com/robsoncombr"
+    }
+  ],
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.10.2",
     "@types/node": "^20.17.32",

@@ -20,6 +20,7 @@ docker run --rm -i wesleywillians/mcp-prompts-for-devs
 ```
 
 This command:
+
 - Downloads the Docker image (if not yet locally available)
 - Starts the server in interactive mode (-i)
 - Automatically removes the container after termination (--rm)
@@ -114,6 +115,34 @@ The server comes with pre-configured prompt templates:
 
 6. Save the file
 7. Restart VSCode
+
+#### Tip: Quick Setup for VSCode
+
+You can quickly set up the configuration by running this command in your terminal:
+
+```bash
+cat > ~/.vscode/settings.json << 'EOL'
+{
+  "mcp": {
+    "inputs": [],
+    "servers": {
+      "mcp-prompts-for-devs-local": {
+        "command": "docker",
+        "args": [
+          "run",
+          "--rm",
+          "-i",
+          "local-mcp-prompts-for-devs:latest"
+        ],
+        "env": {}
+      }
+    }
+  }
+}
+EOL
+```
+
+This command creates the necessary settings file with the proper configuration. Note that this will overwrite your existing VSCode settings file if it exists, so you may want to merge the settings manually if you have other custom configurations.
 
 ## How to Use the Prompt Tool
 
